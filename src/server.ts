@@ -3,6 +3,8 @@ import cors from "cors";
 import socketio from "socket.io";
 import http = require("http");
 
+import {addUser} from "./users";
+
 const database = require("knex")({
   client: "pg",
   connection: {
@@ -24,6 +26,12 @@ app.use(cors());
 
 io.on("connection", (socket) => {
   console.log("We have a new connection");
+
+  socket.on("join", (name: string, callback: Function)=>{
+    const newUser = addUser(name);
+
+    if (newUser.error) return callback(newUser.error);
+  })
 });
 
 app.get("/", (req, res) => {
