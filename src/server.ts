@@ -1,7 +1,9 @@
 import express from "express";
 import cors from "cors";
+import socketio from "socket.io";
+import http = require("http");
 
-var database = require("knex")({
+const database = require("knex")({
   client: "pg",
   connection: {
     host: "ec2-52-72-65-76.compute-1.amazonaws.com",
@@ -12,24 +14,31 @@ var database = require("knex")({
   },
 });
 
-const app = express();
+/** Server definitions */
 const PORT = 3001;
+const app = express();
+const server = http.createServer(app);
+const io = socketio(server);
 
 app.use(cors());
 
-app.get("/", (req, res) => {
-  res.send("Express + TypeScript Server!!");
-  console.log(req.body);
-  database("messages")
-    .insert({
-      chat_message: "test",
-      from_user: "testuser",
-      time: new Date(),
-    })
-    .then(console.log);
-  console.log(`Received`);
+io.on("connection", (socket) => {
+  console.log("We have a new connection");
 });
 
-app.listen(PORT, () => {
+app.get("/", (req, res) => {
+  res.send("Express + TypeScript Server!!");
+  // console.log(req.body);
+  // database("messages")
+  //   .insert({
+  //     chat_message: "test",
+  //     from_user: "testuser",
+  //     time: new Date(),
+  //   })
+  //   .then(console.log);
+  // console.log(`Received`);
+});
+
+server.listen(PORT, () => {
   console.log(`⚡️[server]: Server is running at http://localhost:${PORT}`);
 });
