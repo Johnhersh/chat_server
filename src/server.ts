@@ -4,7 +4,7 @@ import socketio from "socket.io";
 import bodyParser from "body-parser";
 import http = require("http");
 
-import { checkIfUserIsActive, addUser } from "./users";
+import { checkIfUserIsActive, addUser, getActiveUsers } from "./users";
 
 const database = require("knex")({
   client: "pg",
@@ -48,6 +48,12 @@ app.post("/login", jsonParser, (req, res) => {
   if (checkIfUserIsActive(newUser.newUser)) result.nameAvailable = false;
 
   res.send(result);
+});
+
+app.get("/getActiveUsersList", (req, res) => {
+  const activeUsers = getActiveUsers();
+
+  res.send(activeUsers);
 });
 
 server.listen(PORT, () => {

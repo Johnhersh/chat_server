@@ -14,4 +14,14 @@ export const addUser = (name: string, socketID: string) => {
   activeUsers.push(newUser);
 };
 
+export const getActiveUsers = () => {
+  let activeUsersList: string[] = [];
+
+  activeUsers.forEach((user) => {
+    activeUsersList.push(user.username);
+  });
+
+  return activeUsersList;
+};
+
 export const removeUser = (id: string) => {};
