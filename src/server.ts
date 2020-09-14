@@ -29,9 +29,8 @@ app.use(cors());
 io.on("connection", (socket) => {
   console.log("We have a new connection");
 
-  socket.on("join", (name: string, callback: Function) => {
-    const newUser = addUser(name, socket.id);
-    if (newUser.error) return callback(newUser.error);
+  socket.on("join", (name: string) => {
+    addUser(name, socket.id);
   });
 
   socket.on("disconnect", () => {
