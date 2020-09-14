@@ -27,4 +27,10 @@ export const getActiveUsers = () => {
   return activeUsersList;
 };
 
-export const removeUser = (id: string) => {};
+export const removeUser = (id: string) => {
+  for (var i = 0; i < activeUsers.length; i++) {
+    if (activeUsers[i].socketID === id) {
+      activeUsers.splice(i, 1);
+    }
+  }
+};

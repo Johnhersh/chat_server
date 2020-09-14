@@ -4,7 +4,7 @@ import socketio from "socket.io";
 import bodyParser from "body-parser";
 import http = require("http");
 
-import { checkIfUserIsActive, addUser, getActiveUsers } from "./users";
+import { checkIfUserIsActive, addUser, getActiveUsers, removeUser } from "./users";
 
 const database = require("knex")({
   client: "pg",
@@ -37,6 +37,7 @@ io.on("connection", (socket) => {
 
   socket.on("disconnect", () => {
     console.log(`Lost user`);
+    removeUser(socket.id);
   });
 });
 
