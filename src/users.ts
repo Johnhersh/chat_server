@@ -11,7 +11,10 @@ export const checkIfUserIsActive = (name: string) => {
 export const addUser = (name: string, socketID: string) => {
   const newUser = { username: name, socketID: socketID };
 
-  activeUsers.push(newUser);
+  if (!checkIfUserIsActive(name)) {
+    activeUsers.push(newUser); // This is needed in case someone refreshes the page and this gets called twice
+    console.log(`Added ${name}`);
+  }
 };
 
 export const getActiveUsers = () => {
