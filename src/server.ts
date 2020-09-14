@@ -4,7 +4,7 @@ import socketio from "socket.io";
 import bodyParser from "body-parser";
 import http = require("http");
 
-import { addUser } from "./users";
+import { checkIfUserIsActive, addUser } from "./users";
 
 const database = require("knex")({
   client: "pg",
@@ -30,28 +30,23 @@ io.on("connection", (socket) => {
   console.log("We have a new connection");
 
   socket.on("join", (name: string, callback: Function) => {
-    const newUser = addUser(name);
-
+    const newUser = addUser(name, socket.id);
     if (newUser.error) return callback(newUser.error);
+  });
+
+  socket.on("disconnect", () => {
+    console.log(`Lost user`);
   });
 });
 
-app.get("/", (req, res) => {
-  res.send("Express + TypeScript Server!!");
-  // console.log(req.body);
-  // database("messages")
-  //   .insert({
-  //     chat_message: "test",
-  //     from_user: "testuser",
-  //     time: new Date(),
-  //   })
-  //   .then(console.log);
-  // console.log(`Received`);
-});
+// app.get("/", (req, res) => {
+// });
 
 app.post("/login", jsonParser, (req, res) => {
   const newUser: { newUser: string } = req.body;
-  const result = addUser(newUser.newUser);
+  const result = { nameAvailable: true };
+
+  if (checkIfUserIsActive(newUser.newUser)) result.nameAvailable = false;
 
   res.send(result);
 });

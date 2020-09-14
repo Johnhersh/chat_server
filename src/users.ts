@@ -1,13 +1,26 @@
-const users: { username: string }[] = [];
+const activeUsers: { username: string; socketID: string }[] = [];
 
-export const addUser = (name: string): {username: string | undefined, error: string | undefined} => {
-  const existingUser = users.find((user) => user.username === name);
+export const checkIfUserIsActive = (name: string) => {
+  const existingUser = activeUsers.find((user) => user.username === name);
+
+  if (existingUser) return true;
+
+  return false;
+};
+
+export const addUser = (
+  name: string,
+  socketID: string
+): { username: string | undefined; error: string | undefined } => {
+  const existingUser = activeUsers.find((user) => user.username === name);
 
   if (existingUser) return { username: undefined, error: "Username is taken" };
 
-  const newUser = { username: name };
+  const newUser = { username: name, socketID: socketID };
 
-  users.push(newUser);
+  activeUsers.push(newUser);
 
-  return {username: newUser.username, error: undefined};
+  return { username: newUser.username, error: undefined };
 };
+
+export const removeUser = (id: string) => {};
