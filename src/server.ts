@@ -29,8 +29,10 @@ app.use(cors());
 io.on("connection", (socket) => {
   console.log("We have a new connection");
 
-  socket.on("join", (name: string) => {
+  socket.on("join", (name: string, callback: Function) => {
     addUser(name, socket.id);
+
+    if (callback) callback();
   });
 
   socket.on("disconnect", () => {
@@ -51,6 +53,7 @@ app.post("/login", jsonParser, (req, res) => {
 });
 
 app.get("/getActiveUsersList", (req, res) => {
+  console.log(`Getting active users`);
   const activeUsers = getActiveUsers();
 
   res.send(activeUsers);
