@@ -28,9 +28,12 @@ export const getActiveUsers = () => {
 };
 
 export const removeUser = (id: string) => {
+  let removedUser = "";
   for (var i = 0; i < activeUsers.length; i++) {
     if (activeUsers[i].socketID === id) {
+      removedUser = activeUsers[i].username;
       activeUsers.splice(i, 1);
     }
   }
+  return removedUser;
 };

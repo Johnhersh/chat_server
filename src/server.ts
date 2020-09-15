@@ -32,12 +32,15 @@ io.on("connection", (socket) => {
   socket.on("join", (name: string, callback: Function) => {
     addUser(name, socket.id);
 
+    socket.broadcast.emit("user_joined", name);
+
     if (callback) callback();
   });
 
   socket.on("disconnect", () => {
     console.log(`Lost user`);
-    removeUser(socket.id);
+    const removedUser = removeUser(socket.id);
+    socket.broadcast.emit("user_left", removedUser);
   });
 });
 
