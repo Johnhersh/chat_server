@@ -42,7 +42,8 @@ io.on("connection", (socket) => {
   socket.on("submit_message", (message: string) => {
     const messageSender = getUser(socket.id);
     const targetRoom = messageSender.room;
-    socket.to(targetRoom).emit("receive_message", message);
+    const senderName = messageSender.username;
+    socket.to(targetRoom).emit("receive_message", { message, senderName });
   });
 
   socket.on("disconnect", () => {
