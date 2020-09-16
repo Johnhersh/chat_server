@@ -4,18 +4,18 @@ import socketio from "socket.io";
 import bodyParser from "body-parser";
 import http = require("http");
 
-import { checkIfUserIsActive, addUser, getActiveUsers, removeUser } from "./users";
+import { checkIfUserIsActive, addUser, getActiveUsers, removeUser, getUser } from "./users";
 
-const database = require("knex")({
-  client: "pg",
-  connection: {
-    host: "ec2-52-72-65-76.compute-1.amazonaws.com",
-    user: "xyiihuvayytyhr",
-    password: "4cc27f1380333718ab92600d389eebb92ac061ac410cd5ac63bd88a7df989791",
-    database: "d2emsvsn090cem",
-    ssl: { rejectUnauthorized: false },
-  },
-});
+// const database = require("knex")({
+//   client: "pg",
+//   connection: {
+//     host: "ec2-52-72-65-76.compute-1.amazonaws.com",
+//     user: "xyiihuvayytyhr",
+//     password: "4cc27f1380333718ab92600d389eebb92ac061ac410cd5ac63bd88a7df989791",
+//     database: "d2emsvsn090cem",
+//     ssl: { rejectUnauthorized: false },
+//   },
+// });
 
 /** Server definitions */
 const PORT = 3001;
@@ -29,12 +29,20 @@ app.use(cors());
 io.on("connection", (socket) => {
   console.log("We have a new connection");
 
-  socket.on("join", (name: string, callback: Function) => {
-    addUser(name, socket.id);
+  socket.on("join", (newUser: { username: string; room: string }, callback: Function) => {
+    const { username, room } = newUser;
+    addUser(username, room, socket.id);
+    socket.join(room);
 
-    socket.broadcast.emit("user_joined", name);
+    socket.broadcast.emit("user_joined", username);
 
     if (callback) callback();
+  });
+
+  socket.on("submit_message", (message: string) => {
+    const messageSender = getUser(socket.id);
+    const targetRoom = messageSender.room;
+    socket.to(targetRoom).emit("receive_message", message);
   });
 
   socket.on("disconnect", () => {
@@ -43,9 +51,6 @@ io.on("connection", (socket) => {
     socket.broadcast.emit("user_left", removedUser);
   });
 });
-
-// app.get("/", (req, res) => {
-// });
 
 app.post("/login", jsonParser, (req, res) => {
   const newUser: { newUser: string } = req.body;
@@ -56,7 +61,7 @@ app.post("/login", jsonParser, (req, res) => {
   res.send(result);
 });
 
-app.get("/getActiveUsersList", (req, res) => {
+app.get("/getActiveUsersList", (_req, res) => {
   console.log(`Getting active users`);
   const activeUsers = getActiveUsers();
 

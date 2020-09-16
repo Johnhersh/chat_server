@@ -1,4 +1,5 @@
-const activeUsers: { username: string; socketID: string }[] = [];
+type activeUser = { username: string; room: string; socketID: string };
+const activeUsers: activeUser[] = [];
 
 export const checkIfUserIsActive = (name: string) => {
   const existingUser = activeUsers.find((user) => user.username === name);
@@ -8,12 +9,12 @@ export const checkIfUserIsActive = (name: string) => {
   return false;
 };
 
-export const addUser = (name: string, socketID: string) => {
-  const newUser = { username: name, socketID: socketID };
+export const addUser = (name: string, room: string, socketID: string) => {
+  const newUser = { username: name, room: room, socketID: socketID };
 
+  // This is needed in case someone refreshes the page and this gets called twice
   if (!checkIfUserIsActive(name)) {
-    activeUsers.push(newUser); // This is needed in case someone refreshes the page and this gets called twice
-    console.log(`Added ${name}`);
+    activeUsers.push(newUser);
   }
 };
 
@@ -36,4 +37,17 @@ export const removeUser = (id: string) => {
     }
   }
   return removedUser;
+};
+
+export const getUser = (id: string): activeUser => {
+  const foundUser = activeUsers.find((user) => user.socketID === id);
+
+  if (foundUser) {
+    return foundUser;
+  } else
+    return {
+      username: "",
+      room: "",
+      socketID: "",
+    };
 };
