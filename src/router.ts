@@ -1,4 +1,5 @@
 import express from "express";
+import { getMessageLog } from "./database";
 import { checkIfUserIsActive, getActiveUsers } from "./users";
 import bodyParser from "body-parser";
 const router = express.Router();
@@ -14,10 +15,13 @@ router.post("/login", jsonParser, (req, res) => {
 });
 
 router.get("/getActiveUsersList", (_req, res) => {
-  console.log(`Getting active users`);
   const activeUsers = getActiveUsers();
 
   res.send(activeUsers);
+});
+
+router.get("/getMessageLog", (_req, res) => {
+  getMessageLog().then((data) => res.send(data));
 });
 
 export default router;

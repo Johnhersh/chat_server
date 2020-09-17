@@ -1,6 +1,8 @@
 import socketio from "socket.io";
 import { addUser, removeUser, getUser } from "./users";
 
+import { addMessageToDB } from "./database";
+
 export function webSocket(io: socketio.Server) {
   io.on("connection", (socket) => {
     console.log("We have a new connection");
@@ -20,6 +22,7 @@ export function webSocket(io: socketio.Server) {
       const targetRoom = messageSender.room;
       const senderName = messageSender.username;
       socket.to(targetRoom).emit("receive_message", { message, senderName });
+      addMessageToDB(message, senderName);
     });
 
     socket.on("disconnect", () => {
