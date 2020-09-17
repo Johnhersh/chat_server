@@ -6,8 +6,12 @@ import http = require("http");
 import router from "./router";
 import { webSocket } from "./websocket";
 
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
+}
+
 /** Server definitions */
-const PORT = 3001;
+const PORT = process.env.PORT;
 const app = express();
 const server = http.createServer(app);
 const io = socketio(server);

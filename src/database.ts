@@ -2,12 +2,17 @@ import knex from "knex";
 
 type dbMessage = { id: number; chat_message: string; from_user: string; time: string };
 
+/** Needed to have access to environment vars in this file */
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
+}
+
 const database = knex({
   client: "pg",
   connection: {
-    host: "ec2-52-72-65-76.compute-1.amazonaws.com",
-    user: "xyiihuvayytyhr",
-    password: "4cc27f1380333718ab92600d389eebb92ac061ac410cd5ac63bd88a7df989791",
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASS,
     database: "d2emsvsn090cem",
     ssl: { rejectUnauthorized: false },
   },
