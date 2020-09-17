@@ -13,8 +13,17 @@ const database = knex({
   },
 });
 
-export function addMessageToDB(message: string, fromUser: string) {
-  database("messages").insert({
+/*database
+  .on("query", (query) => {
+    console.log(`Executed a query: ${query.__knexQueryUid}`);
+  })
+  .on("query-response", (_response, query) => {
+    console.log(`Received a response from: ${query.__knexQueryUid}`);
+  });*/
+
+export async function addMessageToDB(message: string, fromUser: string) {
+  console.log(`Adding message: ${message}`);
+  await database("messages").insert({
     chat_message: message,
     from_user: fromUser,
     time: new Date(),
