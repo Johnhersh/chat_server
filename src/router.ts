@@ -1,15 +1,15 @@
 import express from "express";
 import { getMessageLog } from "./database";
-import { checkIfUserIsActive, getActiveUsers } from "./users";
+import { isUserNameAvailable, getActiveUsers } from "./users";
 import bodyParser from "body-parser";
 const router = express.Router();
 const jsonParser = bodyParser.json();
 
 router.post("/login", jsonParser, (req, res) => {
   const newUser: { newUser: string } = req.body;
-  const result = { nameAvailable: true };
+  let result = false;
 
-  if (checkIfUserIsActive(newUser.newUser)) result.nameAvailable = false;
+  if (isUserNameAvailable(newUser.newUser)) result = true;
 
   res.send(result);
 });

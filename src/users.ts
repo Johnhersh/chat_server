@@ -1,10 +1,10 @@
 type activeUser = { username: string; room: string; socketID: string };
 const activeUsers: activeUser[] = [];
 
-export const checkIfUserIsActive = (name: string) => {
+export const isUserNameAvailable = (name: string) => {
   const existingUser = activeUsers.find((user) => user.username === name);
 
-  if (existingUser) return true;
+  if (existingUser === undefined) return true;
 
   return false;
 };
@@ -13,7 +13,7 @@ export const addUser = (name: string, room: string, socketID: string) => {
   const newUser = { username: name, room: room, socketID: socketID };
 
   // This is needed in case someone refreshes the page and this gets called twice
-  if (!checkIfUserIsActive(name)) {
+  if (isUserNameAvailable(name)) {
     activeUsers.push(newUser);
   }
 };
