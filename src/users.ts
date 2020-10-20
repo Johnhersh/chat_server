@@ -9,10 +9,7 @@ const activeUsersStore = (() => {
 })();
 
 export const isUserNameAvailable = (name: string): boolean => {
-  // const existingUser = activeUsers.find((user) => user.username === name);
   const activeUsers = activeUsersStore.getUsers();
-  console.log("Active users:");
-  console.log(activeUsers);
   const existingUser = activeUsers.find((user) => user.username === name);
 
   if (existingUser === undefined) return true;
