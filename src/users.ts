@@ -40,14 +40,15 @@ export const getActiveUsers = (): readonly string[] => {
 };
 
 export const removeUser = (id: string): string => {
-  const activeUsers = activeUsersStore.getUsers();
   let removedUser = "";
-  for (var i = 0; i < activeUsers.length; i++) {
-    if (activeUsers[i].socketID === id) {
-      removedUser = activeUsers[i].username;
-      activeUsers.splice(i, 1);
+  const activeUsers = activeUsersStore.getUsers().filter((user) => {
+    if (user.socketID === id) {
+      removedUser = user.username;
+      return false;
     }
-  }
+    return true;
+  });
+  activeUsersStore.setUsers(activeUsers);
   return removedUser;
 };
 
